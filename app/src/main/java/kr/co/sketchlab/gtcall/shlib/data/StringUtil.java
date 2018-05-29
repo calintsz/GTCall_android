@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Patterns;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -60,5 +62,36 @@ public class StringUtil {
 
     public static String isEmpty(String str, String defaultStr) {
         return TextUtils.isEmpty(str) ? defaultStr : str;
+    }
+
+    /**
+     * url 에서 parameter 분리
+     * @param url url
+     * @return parameters
+     */
+    public static ShHashMap paramFromUrl(String url) {
+        ShHashMap ret = new ShHashMap();
+
+        String[] fields = url.split("\\?");
+        if(fields.length < 2) {
+            return ret;
+        }
+
+        String strParam = fields[1];
+        String[] segs = strParam.split("&");
+        for(String seg : segs) {
+            String[] kv = seg.split("=", 2);
+            if(kv.length == 2) {
+                try {
+                    String key = URLDecoder.decode(kv[0], "utf-8");
+                    String val = URLDecoder.decode(kv[1], "utf-8");
+                    ret.put(key, val);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return ret;
     }
 }

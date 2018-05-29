@@ -1,14 +1,17 @@
-package kr.co.sketchlab.gtcall.ui;
+package kr.co.sketchlab.gtcall.ui.activity;
 
 import android.os.Bundle;
 
+import kr.co.sketchlab.gtcall.GTCallActivity;
 import kr.co.sketchlab.gtcall.R;
-import kr.co.sketchlab.gtcall.shlib.ui.activity.S3Activity;
+import kr.co.sketchlab.gtcall.model.Api;
 
-public class SplashActivity extends S3Activity {
+public class SplashActivity extends GTCallActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        Api.tryLogin(mActivity);
     }
 }

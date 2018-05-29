@@ -3,6 +3,7 @@ package kr.co.sketchlab.gtcall.shlib.net;
 import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -14,7 +15,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
-import com.m_hogaeng.shlib.Progress;
 
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -33,6 +33,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import kr.co.sketchlab.gtcall.shlib.ui.Progress;
+
 /**
  * Created by shp on 2016. 10. 11..
  */
@@ -46,7 +48,7 @@ public class SApiCore {
 
     Context mContext;
 
-    private final int TIMEOUT_MS = 60 * 1000;
+    private final int TIMEOUT_MS = 10 * 1000;
 
     public static SApiCore get(Context context) {
         if(thisObj == null) {
@@ -152,11 +154,11 @@ public class SApiCore {
                     onRequestComplete.onSucceeded(response, obj);
                 } catch (JSONException e) {
                     e.printStackTrace();
-//                    Toast.makeText(mContext, "JSON형식 오류", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "형식 오류", Toast.LENGTH_LONG).show();
                     onRequestComplete.onFailed(response);
                 } catch (Exception e) {
                     e.printStackTrace();
-//                    Toast.makeText(mContext, "JSON해석 오류", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "해석 오류", Toast.LENGTH_LONG).show();
                     onRequestComplete.onFailed(response);
                 }
             }
@@ -171,7 +173,7 @@ public class SApiCore {
                     paramStr += entry.first + "=" + entry.second + "&";
                 }
 
-                String urlWithParam = url + "?" + paramStr;
+//                String urlWithParam = url + "?" + paramStr;
                 Log.e(TAG, error.toString() + " url: " + url + "?" + paramStr);
 
 //                String msg = new String(error.networkResponse.data, Charset.forName("UTF8"));
@@ -181,6 +183,7 @@ public class SApiCore {
 //                } catch(Exception e) {
 //                    Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
 //                }
+                Toast.makeText(mContext, error.getMessage(), Toast.LENGTH_LONG).show();
                 onRequestComplete.onError(error.getMessage());
             }
         });

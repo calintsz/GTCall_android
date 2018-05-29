@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.m_hogaeng.R;
-import com.m_hogaeng.shlib.S3Util;
+import kr.co.sketchlab.gtcall.R;
+import kr.co.sketchlab.gtcall.shlib.ui.ViewUtil;
 
 
 /**
@@ -28,8 +28,8 @@ public class PagerDotView {
     public PagerDotView(Activity activity, FrameLayout holder, int sizeInDp, int marginInDp) {
         this.activity = activity;
         this.holder = holder;
-        this.sizeInPx = S3Util.dp2px(activity, sizeInDp);
-        this.marginInPx = S3Util.dp2px(activity, marginInDp);
+        this.sizeInPx = ViewUtil.dp2px(activity, sizeInDp);
+        this.marginInPx = ViewUtil.dp2px(activity, marginInDp);
     }
 
     public void setPageCnt(int pageCnt) {
@@ -48,7 +48,7 @@ public class PagerDotView {
                 holder.addView(dot);
 
                 int leftMargin = (marginInPx+sizeInPx) * i;
-                S3Util.setViewMarginLeft(dot, leftMargin, false);
+                ViewUtil.setViewMarginLeft(dot, leftMargin, false);
             }
 
             // 선택 아이콘 더하기
@@ -68,6 +68,6 @@ public class PagerDotView {
         this.curPage = curPage;
 
         int selDotMarginLeft = (int)(curPage * (marginInPx+sizeInPx));
-        S3Util.setViewMarginLeft(dotSel, selDotMarginLeft, true);
+        ViewUtil.setViewMarginLeft(dotSel, selDotMarginLeft, true);
     }
 }

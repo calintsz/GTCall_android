@@ -38,7 +38,7 @@ public class S3Activity extends FragmentActivity {
 
     protected ViewDataBinder q;
 
-    protected Activity mActivity;
+    protected S3Activity mActivity;
 
     private static S3Activity lastActivity = null;
     public static S3Activity getLastActivity() {
@@ -134,14 +134,19 @@ public class S3Activity extends FragmentActivity {
         LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent);
     }
 
-    protected void startActivity(Class<?> cls) {
+    public void startActivityWithClear(Class<?> cls) {
+        Intent intent = new Intent(this, cls);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.startActivity(intent);
+    }
+    public void startActivity(Class<?> cls) {
         startActivity(new Intent(this, cls));
     }
-    protected void startActivity(Class<?> cls, int requestCode) {
+    public void startActivity(Class<?> cls, int requestCode) {
         startActivityForResult(new Intent(this, cls), requestCode);
     }
 
-    protected void startActivity(Class<?> cls, Intent intent) {
+    public void startActivity(Class<?> cls, Intent intent) {
         intent.setComponent(new ComponentName(this, cls));
         startActivity(intent);
     }
