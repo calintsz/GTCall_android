@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="280dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="end"
+    android:clickable="true"
+    android:background="#fff">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#2753a5">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="18dp"
+            android:textSize="19sp"
+            android:textColor="#fff"
+            android:text="내 정보"/>
+        <ImageView
+            android:id="@+id/btnCloseDrawer"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/ripple_white"
+            android:scaleType="centerInside"
+            android:src="@drawable/btn_close"
+            android:layout_gravity="right"/>
+    </FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingRight="7dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/img_profile"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="12dp"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/txtName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#333333"
+                android:textStyle="bold"
+                android:text="이름"/>
+            <TextView
+                android:id="@+id/txtPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="#999999"
+                android:text="010-0000-0000"/>
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/btnSetting"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:scaleType="centerInside"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ripple_black"
+            android:src="@drawable/ic_setting"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#dddddd" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        android:background="#f7f7f8" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd" />
+                <!--공지사항-->
+                <FrameLayout
+                    android:id="@+id/btnDrawerNotice"
+                    android:layout_width="match_parent"
+                    android:layout_height="41dp"
+                    android:background="@drawable/ripple_black">
+                    <ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_notice"
+                        android:layout_gravity="center_vertical"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:textSize="14sp"
+                        android:textColor="#222222"
+                        android:layout_gravity="center_vertical"
+                        android:text="공지사항"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_drawer_next"
+                        android:layout_marginRight="16dp"
+                        android:layout_gravity="center_vertical|right" />
+                </FrameLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd" />
+                <!--나의 캐시백-->
+                <FrameLayout
+                    android:id="@+id/btnDrawerMyCashBack"
+                    android:layout_width="match_parent"
+                    android:layout_height="41dp"
+                    android:background="@drawable/ripple_black">
+                    <ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_cash_back"
+                        android:layout_gravity="center_vertical"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:textSize="14sp"
+                        android:textColor="#222222"
+                        android:layout_gravity="center_vertical"
+                        android:text="나의 캐시백"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_drawer_next"
+                        android:layout_marginRight="16dp"
+                        android:layout_gravity="center_vertical|right" />
+                </FrameLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd" />
+                <!--친구 초청-->
+                <FrameLayout
+                    android:id="@+id/btnDrawerInviteFriend"
+                    android:layout_width="match_parent"
+                    android:layout_height="41dp"
+                    android:background="@drawable/ripple_black">
+                    <ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_friend"
+                        android:layout_gravity="center_vertical"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:textSize="14sp"
+                        android:textColor="#222222"
+                        android:layout_gravity="center_vertical"
+                        android:text="친구 초청"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_drawer_next"
+                        android:layout_marginRight="16dp"
+                        android:layout_gravity="center_vertical|right" />
+                </FrameLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd" />
+                <!--일반 전화번호 등록-->
+                <FrameLayout
+                    android:id="@+id/btnDrawerSubPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="41dp"
+                    android:background="@drawable/ripple_black">
+                    <ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_call"
+                        android:layout_gravity="center_vertical"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:textSize="14sp"
+                        android:textColor="#222222"
+                        android:layout_gravity="center_vertical"
+                        android:text="일반 전화번호 등록"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_drawer_next"
+                        android:layout_marginRight="16dp"
+                        android:layout_gravity="center_vertical|right" />
+                </FrameLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="7dp"
+                    android:background="#f7f7f8" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd" />
+                <!--이용 약관-->
+                <FrameLayout
+                    android:id="@+id/btnDrawerTerms"
+                    android:layout_width="match_parent"
+                    android:layout_height="41dp"
+                    android:background="@drawable/ripple_black">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:textSize="13sp"
+                        android:textColor="#666666"
+                        android:layout_gravity="center_vertical"
+                        android:text="이용 약관"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_drawer_next_sm"
+                        android:layout_marginRight="16dp"
+                        android:layout_gravity="center_vertical|right" />
+                </FrameLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd" />
+                <!--개인정보처리방침-->
+                <FrameLayout
+                    android:id="@+id/btnDrawerPrivacyPolicy"
+                    android:layout_width="match_parent"
+                    android:layout_height="41dp"
+                    android:background="@drawable/ripple_black">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:textSize="13sp"
+                        android:textColor="#666666"
+                        android:layout_gravity="center_vertical"
+                        android:text="개인정보처리방침"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_drawer_next_sm"
+                        android:layout_marginRight="16dp"
+                        android:layout_gravity="center_vertical|right" />
+                </FrameLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd" />
+            </LinearLayout>
+        </ScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#dddddd" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:orientation="horizontal"
+            android:background="#f7f7f8">
+            <FrameLayout
+                android:id="@+id/btnDrawerCashBackQuestion"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/ripple_black">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="13sp"
+                    android:textColor="#999999"
+                    android:drawableLeft="@drawable/ic_about_cashback"
+                    android:drawablePadding="5dp"
+                    android:text="캐시백 문의"/>
+            </FrameLayout>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#dddddd" />
+            <FrameLayout
+                android:id="@+id/btnDrawerGeneralQuestion"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/ripple_black">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="13sp"
+                    android:textColor="#999999"
+                    android:drawableLeft="@drawable/ic_about"
+                    android:drawablePadding="5dp"
+                    android:text="일반 문의"/>
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

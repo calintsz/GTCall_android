@@ -43,9 +43,9 @@ public class StringUtil {
         return spannable;
     }
 
-    public static String formatPhoneNumber(String phoneNumber, String countryCode) {
+    public static String formatPhoneNumber(String phoneNumber) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return PhoneNumberUtils.formatNumber(phoneNumber, countryCode);
+            return PhoneNumberUtils.formatNumber(phoneNumber, "KR");
         } else {
             return PhoneNumberUtils.formatNumber(phoneNumber);
         }

@@ -139,6 +139,11 @@ public class S3Activity extends FragmentActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         this.startActivity(intent);
     }
+    public void startActivityWithClear(Class<?> cls, Intent intent) {
+        intent.setComponent(new ComponentName(this, cls));
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.startActivity(intent);
+    }
     public void startActivity(Class<?> cls) {
         startActivity(new Intent(this, cls));
     }

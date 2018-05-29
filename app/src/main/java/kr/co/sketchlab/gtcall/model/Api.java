@@ -4,6 +4,7 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import kr.co.sketchlab.gtcall.model.obj.AccountObj;
 import kr.co.sketchlab.gtcall.model.obj.AuthObj;
 import kr.co.sketchlab.gtcall.shlib.net.SApi;
 import kr.co.sketchlab.gtcall.shlib.net.SApiCore;
@@ -24,7 +25,7 @@ public class Api {
 
 
     public static void tryLogin(final S3Activity fromActivity) {
-        AuthObj authObj = Pref.getAuth();
+        final AuthObj authObj = Pref.getAuth();
 
         if(authObj == null) {
             WebActivity.start(fromActivity, Api.APP_BASE, "회원가입", true);
@@ -41,6 +42,16 @@ public class Api {
                     public void onSucceeded(String str, JSONObject obj) throws Exception {
                         // 로그인 성공이면 메인으로, 실패면 로그인화면으로
                         if(obj.getInt("state") == 0) { // 로그인 성공
+                            // 계정정보
+                            JSONObject accountData = obj.getJSONObject("data");
+                            // 계정정보 저장
+                            AccountObj accountObj = new AccountObj(accountData);
+                            Pref.saveAccount(accountObj);
+
+                            // 바뀐 로그인 키 저장
+                            authObj.loginKey = accountObj.get(AccountObj.F.login_key);
+                            Pref.saveAuth(authObj);
+
                             // 메인으로 이동
                             fromActivity.startActivityWithClear(MainActivity.class);
                         } else { // 로그인 실패
