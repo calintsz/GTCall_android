@@ -47,12 +47,12 @@
                 android:layout_width="0dp"
                 android:layout_height="45dp"
                 android:layout_weight="1"
-                android:background="#f9d219"
+                android:background="#2753a5"
                 android:text="확인"
                 android:gravity="center"
                 android:textColor="#fff"
                 android:textSize="16sp"
-                android:foreground="@drawable/ripple_black"/>
+                android:foreground="@drawable/ripple_white"/>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

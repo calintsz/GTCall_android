@@ -14,7 +14,8 @@ public class AccountObj extends JsonObj {
         bank_account,
         bank_account_owner,
         login_key,
-        follower_cnt;
+        follower_cnt,
+        bottom_notice;
     }
 
     public AccountObj(JSONObject obj) {

@@ -6,11 +6,13 @@ import kr.co.sketchlab.gtcall.TheApp;
 import kr.co.sketchlab.gtcall.model.obj.AccountObj;
 import kr.co.sketchlab.gtcall.model.obj.AuthObj;
 import kr.co.sketchlab.gtcall.shlib.data.ShPref;
+import kr.co.sketchlab.gtcall.shlib.data.StringUtil;
 
 public class Pref {
     public static final String PREF_NAME = "gtcall";
 
     private static AuthObj authObjCache = null;
+    private static AccountObj accountObjCache = null;
 
     private static void save(String key, String val) {
         ShPref.setPreference(TheApp.instance(), PREF_NAME, key, val);
@@ -55,6 +57,8 @@ public class Pref {
     public static void saveAccount(AccountObj obj) {
         String strObj = obj.toString();
         save("accountObj", strObj);
+
+        accountObjCache = obj;
     }
 
     /**
@@ -62,16 +66,38 @@ public class Pref {
      * @return
      */
     public static AccountObj getAccount() {
+        if(accountObjCache != null) {
+            return accountObjCache;
+        }
+
         String strObj = get("accountObj");
         if(strObj == null) {
             return null;
         }
 
         try {
-            return new AccountObj(strObj);
+            accountObjCache = new AccountObj(strObj);
+            return accountObjCache;
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * 핸드폰 번호 저장
+     * @param phone
+     */
+    public static void savePhoneNumber(String phone) {
+        phone = StringUtil.removeNonNumber(phone);
+        save("device_phone_number", phone);
+    }
+
+    /**
+     * 핸드폰 번호 가져오기
+     * @return
+     */
+    public static String getPhoneNumber() {
+        return get("device_phone_number");
     }
 }

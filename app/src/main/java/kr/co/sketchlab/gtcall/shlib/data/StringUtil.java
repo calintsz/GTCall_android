@@ -43,12 +43,43 @@ public class StringUtil {
         return spannable;
     }
 
+    /**
+     * 전화번호 형식 포멧
+     * @param phoneNumber
+     * @return
+     */
     public static String formatPhoneNumber(String phoneNumber) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return PhoneNumberUtils.formatNumber(phoneNumber, "KR");
         } else {
             return PhoneNumberUtils.formatNumber(phoneNumber);
         }
+    }
+
+    /**
+     * 숫자가 아닌 문자 모두 제거
+     * @param str
+     * @return
+     */
+    public static String removeNonNumber(String str) {
+        if(str == null) {
+            return null;
+        }
+        return str.replaceAll("[^\\d.]", "");
+    }
+
+    /**
+     * 전화번호에서 국가코드 삭제하고 번호만 남김
+     * @param phoneNumber
+     * @return
+     */
+    public static String toLocalPhoneNumber(String phoneNumber) {
+        if(phoneNumber.startsWith("+82")) {
+            phoneNumber = phoneNumber.substring(3);
+            phoneNumber = "0" + phoneNumber;
+            return phoneNumber;
+        }
+        return phoneNumber;
     }
 
     public static boolean isEmailAddress(String email) {

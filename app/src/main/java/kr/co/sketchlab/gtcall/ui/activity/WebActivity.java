@@ -15,6 +15,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import kr.co.sketchlab.gtcall.BuildConfig;
 import kr.co.sketchlab.gtcall.GTCallActivity;
 import kr.co.sketchlab.gtcall.R;
@@ -115,6 +118,10 @@ public class WebActivity extends GTCallActivity {
 
                 // 로그인 성공시, key 로 다시 로그인 시도
                 Api.tryLogin(mActivity);
+                return true;
+            } else if(cmd.equals("close")) {
+                finish();
+                return true;
             }
         }
 
@@ -174,6 +181,20 @@ public class WebActivity extends GTCallActivity {
         private boolean myShouldOverrideUrlLoading(WebView view, String url) {
             Log.d("URL", url);
             if (url.startsWith("http") && url.contains(Api.WEB_BASE)) { //
+                // 안드로이드에서는 전화번호가 있으면, 휴대전화 인증과정을 건너뜀
+                if(url.endsWith("register/phone_confirm")) {
+                    String phone = Pref.getPhoneNumber();
+                    if(phone != null) {
+                        try {
+                            url = url + "?phone=" + URLEncoder.encode(phone, "UTF-8");
+                            Log.d("URL", url);
+                            webView.loadUrl(url);
+                            return true;
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
                 return false;
             } else { //
                 if (!doAppCommand(url)) {
@@ -187,7 +208,6 @@ public class WebActivity extends GTCallActivity {
                 return true;
             }
         }
-
 
         @Override
         public void onPageFinished(WebView view, String url) {

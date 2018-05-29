@@ -1,5 +1,6 @@
 package kr.co.sketchlab.gtcall.model;
 
+import android.view.View;
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -18,10 +19,51 @@ public class Api {
 
     public static final String APP_BASE = WEB_BASE + "/app";
 
+    // 공지 페이지
+    public static final String PAGE_NOTICE = APP_BASE + "/notice";
+    public static final String PAGE_SETTING = APP_BASE + "/profile/edit?login_key=";
 
 
     // 로그인(phone, login_key)
     public static final String API_LOGIN = "member/login";
+    public static final String API_GET_INFO = "member/getInfo";
+
+
+    /**
+     * 업데이트된 회원정보 조회
+     * @param activity
+     * @param onInfoUpdate
+     */
+    public static void updateMemberInfo(S3Activity activity, final View.OnClickListener onInfoUpdate) {
+        SApi.with(activity, Api.API_GET_INFO)
+                .param("login_key", Pref.getAccount().get(AccountObj.F.login_key))
+                .call(true, new SApiCore.OnRequestComplete() {
+                    @Override
+                    public void onSucceeded(String str, JSONObject obj) throws Exception {
+                        if(obj.getInt("state") == 0) { // 로그인 성공
+                            // 계정정보
+                            JSONObject accountData = obj.getJSONObject("data");
+                            // 계정정보 저장
+                            AccountObj accountObj = new AccountObj(accountData);
+                            Pref.saveAccount(accountObj);
+
+                            if(onInfoUpdate != null) {
+                                onInfoUpdate.onClick(null);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailed(String message) {
+
+                    }
+
+                    @Override
+                    public void onError(String message) {
+
+                    }
+                });
+    }
 
 
     public static void tryLogin(final S3Activity fromActivity) {
