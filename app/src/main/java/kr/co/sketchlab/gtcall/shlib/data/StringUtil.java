@@ -74,6 +74,9 @@ public class StringUtil {
      * @return
      */
     public static String toLocalPhoneNumber(String phoneNumber) {
+        if(phoneNumber == null) {
+            return null;
+        }
         if(phoneNumber.startsWith("+82")) {
             phoneNumber = phoneNumber.substring(3);
             phoneNumber = "0" + phoneNumber;

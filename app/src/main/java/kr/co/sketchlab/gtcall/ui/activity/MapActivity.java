@@ -1,13 +1,13 @@
 package kr.co.sketchlab.gtcall.ui.activity;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.GeolocationPermissions;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -23,36 +23,38 @@ import kr.co.sketchlab.gtcall.GTCallActivity;
 import kr.co.sketchlab.gtcall.R;
 import kr.co.sketchlab.gtcall.model.Api;
 import kr.co.sketchlab.gtcall.model.Pref;
-import kr.co.sketchlab.gtcall.model.obj.AuthObj;
-import kr.co.sketchlab.gtcall.shlib.data.ShHashMap;
-import kr.co.sketchlab.gtcall.shlib.data.StringUtil;
+import kr.co.sketchlab.gtcall.model.obj.AccountObj;
 import kr.co.sketchlab.gtcall.shlib.ui.comp.SAlertDialog;
 
-public class WebActivity extends GTCallActivity {
+public class MapActivity extends GTCallActivity {
     WebView webView;
-
-    public static void start(Activity fromActivity, String url, String title, boolean clear) {
-        Intent intent = new Intent(fromActivity, WebActivity.class);
-        if(clear) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        }
-
-        intent.putExtra("title", title);
-        intent.putExtra("url", url);
-        fromActivity.startActivity(intent);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_web);
+        setContentView(R.layout.activity_map);
 
         Intent data = getIntent();
-        String title = data.getStringExtra("title");
-        String url = data.getStringExtra("url");
+        double lat = data.getDoubleExtra("lat", 0);
+        double lng = data.getDoubleExtra("lng", 0);
+        String addr = data.getStringExtra("addr");
 
-        // 타이틀
-        v(R.id.txtTitle).setText(title);
+        v(R.id.txtAddr).setText(addr);
+
+        v(R.id.btnBack).click(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        // 현재위치 버튼 클릭
+        v(R.id.btnGps).click(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webView.loadUrl("javascript:moveToCurrentLocation()");
+            }
+        });
 
 
         webView = (WebView) v(R.id.webview).v();
@@ -68,15 +70,17 @@ public class WebActivity extends GTCallActivity {
         webView.getSettings().setLoadWithOverviewMode(false);
 
         webView.getSettings().setGeolocationEnabled(true);
+        webView.getSettings().setGeolocationDatabasePath( getFilesDir().getPath() );
+
+        webView.getSettings().setAppCacheEnabled(true);
+        webView.getSettings().setDatabaseEnabled(true);
+        webView.getSettings().setDomStorageEnabled(true);
 
         webView.setFocusable(true);
         webView.setFocusableInTouchMode(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT); // 250811
-        webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setAppCacheEnabled(true);
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        webView.getSettings().setDatabaseEnabled(true);
         webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
 
         // 웹뷰 디버깅 가능하게
@@ -86,21 +90,18 @@ public class WebActivity extends GTCallActivity {
             }
         }
 
-
-        // 백
-        v(R.id.btnBack).click(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (webView.canGoBack()) {
-                    webView.goBack();
-                } else {
-                    finish();
-                }
-            }
-        });
-
-        webView.loadUrl(url);
+        try {
+            webView.loadUrl(Api.PAGE_MAP + Pref.getAccount().get(AccountObj.F.login_key) + "&lat=" + URLEncoder.encode(Double.toString(lat), "UTF-8") + "&lng=" + URLEncoder.encode(Double.toString(lng), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
 
     boolean doAppCommand(String url) {
         if (url.startsWith("app://")) {
@@ -108,17 +109,7 @@ public class WebActivity extends GTCallActivity {
             String[] fields = cmd.split("\\?");
 
             cmd = fields[0];
-            if(cmd.equals("login_suc")) {
-                ShHashMap params = StringUtil.paramFromUrl(url);
-                String phone = params.getString("phone");
-                String loginKey = params.getString("login_key");
-
-                AuthObj authObj = new AuthObj(phone, loginKey);
-                Pref.saveAuth(authObj);
-
-                // 로그인 성공시, key 로 다시 로그인 시도
-                Api.tryLogin(mActivity);
-            } else if(cmd.equals("close")) {
+            if(cmd.equals("close")) {
                 finish();
             }
 
@@ -163,6 +154,12 @@ public class WebActivity extends GTCallActivity {
             });
             return true;
         }
+
+        @Override
+        public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+//            super.onGeolocationPermissionsShowPrompt(origin, callback);
+            callback.invoke(origin, true, false);
+        }
     }
 
     class MyWebViewClient extends WebViewClient {
@@ -182,19 +179,19 @@ public class WebActivity extends GTCallActivity {
             Log.d("URL", url);
             if (url.startsWith("http") && url.contains(Api.WEB_BASE)) { //
                 // 안드로이드에서는 전화번호가 있으면, 휴대전화 인증과정을 건너뜀
-                if(url.endsWith("register/phone_confirm")) {
-                    String phone = Pref.getPhoneNumber();
-                    if(phone != null) {
-                        try {
-                            url = url + "?phone=" + URLEncoder.encode(phone, "UTF-8");
-                            Log.d("URL", url);
-                            webView.loadUrl(url);
-                            return true;
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
+//                if(url.endsWith("register/phone_confirm")) {
+//                    String phone = Pref.getPhoneNumber();
+//                    if(phone != null) {
+//                        try {
+//                            url = url + "?phone=" + URLEncoder.encode(phone, "UTF-8");
+//                            Log.d("URL", url);
+//                            webView.loadUrl(url);
+//                            return true;
+//                        } catch (UnsupportedEncodingException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
                 return false;
             } else { //
                 if (!doAppCommand(url)) {

@@ -21,13 +21,34 @@ public class Api {
 
     // 공지 페이지
     public static final String PAGE_NOTICE = APP_BASE + "/notice";
+    // 설정
     public static final String PAGE_SETTING = APP_BASE + "/profile/edit?login_key=";
+    // 나의 캐시백
+    public static final String PAGE_CASHBACK = APP_BASE + "/cashback/manage?login_key=";
+    // 일반전화번호 등록
+    public static final String PAGE_SUBPHONE = APP_BASE + "/profile/subphone?login_key=";
+
+    // 현재위치 지도보기
+    public static final String PAGE_MAP = APP_BASE + "/map?login_key=";
+
+    // 이용약관
+    public static final String PAGE_TERMS = APP_BASE + "/agreement/terms";
+    // 개인정보 처리방침
+    public static final String PAGE_PRIVACY = APP_BASE + "/agreement/privacy";
+    // 위치정보 처리방침
+    public static final String PAGE_LOCATION = APP_BASE + "/agreement/location";
 
 
     // 로그인(phone, login_key)
     public static final String API_LOGIN = "member/login";
+    // 회원정보 요청
     public static final String API_GET_INFO = "member/getInfo";
 
+    // gps 좌표를 주소로 변환(login_key, lat, lng)
+    public static final String API_GPS2ADDR = "location/gps2addr";
+
+    // 서비스 지역 목로 조회
+    public static final String API_SERVICE_AREA = "service_area/getList";
 
     /**
      * 업데이트된 회원정보 조회

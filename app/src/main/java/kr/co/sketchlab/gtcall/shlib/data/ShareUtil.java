@@ -37,4 +37,13 @@ public class ShareUtil {
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, text);
         context.startActivity(Intent.createChooser(emailIntent, "Send email"));
     }
+
+    public static void shareText(Context context, String shareTitle, String msgTitle, String msg) {
+        String shareBody = msg;
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, msgTitle);
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        context.startActivity(Intent.createChooser(sharingIntent, shareTitle));
+    }
 }

@@ -277,6 +277,31 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#dddddd" />
+                <!--위치정보 수집방침-->
+                <FrameLayout
+                    android:id="@+id/btnDrawerLocationPolicy"
+                    android:layout_width="match_parent"
+                    android:layout_height="41dp"
+                    android:background="@drawable/ripple_black">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:textSize="13sp"
+                        android:textColor="#666666"
+                        android:layout_gravity="center_vertical"
+                        android:text="위치정보처리방침"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_drawer_next_sm"
+                        android:layout_marginRight="16dp"
+                        android:layout_gravity="center_vertical|right" />
+                </FrameLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd" />
             </LinearLayout>
         </ScrollView>
 

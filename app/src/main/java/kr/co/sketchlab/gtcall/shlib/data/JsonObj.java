@@ -13,9 +13,26 @@ public class JsonObj {
         this.obj = new JSONObject(strObj);
     }
 
-    protected String get(String name) {
+    public JSONObject getRawObj() {
+        return obj;
+    }
+
+    public String get(String name) {
         try {
             return obj.getString(name);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public JsonObj getObj(String name) {
+        try {
+            JSONObject jo = obj.getJSONObject(name);
+            if(jo == null) {
+                return null;
+            }
+            return new JsonObj(jo);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package kr.co.sketchlab.gtcall.ui.activity;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -9,16 +10,29 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import kr.co.sketchlab.gtcall.GTCallActivity;
 import kr.co.sketchlab.gtcall.R;
 import kr.co.sketchlab.gtcall.model.Api;
-import kr.co.sketchlab.gtcall.model.Conf;
 import kr.co.sketchlab.gtcall.model.Pref;
 import kr.co.sketchlab.gtcall.model.obj.AccountObj;
+import kr.co.sketchlab.gtcall.model.obj.AddressObj;
+import kr.co.sketchlab.gtcall.shlib.data.JsonUtil;
+import kr.co.sketchlab.gtcall.shlib.data.ShDateTime;
 import kr.co.sketchlab.gtcall.shlib.data.StringUtil;
 import kr.co.sketchlab.gtcall.shlib.location.MyLocationManager;
+import kr.co.sketchlab.gtcall.shlib.net.SApi;
+import kr.co.sketchlab.gtcall.shlib.net.SApiCore;
+import kr.co.sketchlab.gtcall.shlib.ui.comp.SAlertDialog;
+import kr.co.sketchlab.gtcall.util.GTShare;
 
 public class MainActivity extends GTCallActivity {
     private final static int PERMISSIONS_REQUEST_CODE = 100;
@@ -31,6 +45,8 @@ public class MainActivity extends GTCallActivity {
     double curLat = 0;
     double curLng = 0;
 
+    AddressObj addressObj = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +56,7 @@ public class MainActivity extends GTCallActivity {
         v(R.id.btnDrawer).click(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(drawer.isDrawerOpen(GravityCompat.END)) {
+                if (drawer.isDrawerOpen(GravityCompat.END)) {
                     drawer.closeDrawer(GravityCompat.END);
                 } else {
                     drawer.openDrawer(GravityCompat.END);
@@ -78,35 +94,43 @@ public class MainActivity extends GTCallActivity {
         v(R.id.btnDrawerMyCashBack).click(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                WebActivity.start(mActivity, Api.PAGE_CASHBACK + Pref.getAccount().get(AccountObj.F.login_key), "나의 캐시백", false);
             }
         });
         // 친구초청
         v(R.id.btnDrawerInviteFriend).click(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                // 공유하기
+                GTShare.share(mActivity, Pref.getAccount().get(AccountObj.F.share_msg));
             }
         });
         // 일반전화번호등록
         v(R.id.btnDrawerSubPhone).click(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                WebActivity.start(mActivity, Api.PAGE_SUBPHONE + Pref.getAccount().get(AccountObj.F.login_key), "일반 전화번호 등록", false);
             }
         });
         // 이용약관
         v(R.id.btnDrawerTerms).click(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                WebActivity.start(mActivity, Api.PAGE_TERMS, "이용약관", false);
             }
         });
         // 개인정보 처리방침
         v(R.id.btnDrawerPrivacyPolicy).click(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                WebActivity.start(mActivity, Api.PAGE_PRIVACY, "개인정보처리방침", false);
+            }
+        });
+        // 위치정보 처리방침
+        v(R.id.btnDrawerLocationPolicy).click(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WebActivity.start(mActivity, Api.PAGE_LOCATION, "위치정보처리방침", false);
             }
         });
         // 캐시백 문의
@@ -114,7 +138,7 @@ public class MainActivity extends GTCallActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:" + Conf.CONTACT_NUMBER));
+                intent.setData(Uri.parse("tel:" + accountObj.get(AccountObj.F.contact_cashback)));
                 startActivity(intent);
             }
         });
@@ -123,7 +147,7 @@ public class MainActivity extends GTCallActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:" + Conf.CONTACT_NUMBER));
+                intent.setData(Uri.parse("tel:" + accountObj.get(AccountObj.F.contact_general)));
                 startActivity(intent);
             }
         });
@@ -138,7 +162,67 @@ public class MainActivity extends GTCallActivity {
         v(R.id.btnCall).click(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (addressObj != null) {
+                    String callNumber = addressObj.getCallNumber();
 
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+                    intent.setData(Uri.parse("tel:" + callNumber));
+                    if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                    startActivity(intent);
+                } else {
+                    // TODO 지역 선택해서 전화걸게
+                    SApi.with(mActivity, Api.API_SERVICE_AREA)
+                            .call(true, new SApiCore.OnRequestComplete() {
+                                @Override
+                                public void onSucceeded(String str, JSONObject obj) throws Exception {
+                                    if(obj.getInt("state") == 0) { // 조회 성공
+                                        JSONArray objs = obj.getJSONArray("data");
+                                        final ArrayList<JSONObject> list = JsonUtil.toArrayList(objs);
+                                        // 목록에서 선택하게함
+                                        ArrayList<String> areaNames = new ArrayList<>();
+                                        for(JSONObject item : list) {
+                                            String areaName = item.getString("area_name");
+                                            areaNames.add(areaName);
+                                        }
+
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                                        builder.setTitle("지역을 선택해주세요.");
+                                        builder.setItems(areaNames.toArray(new String[areaNames.size()]), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                JSONObject selItem = list.get(which);
+                                                try {
+                                                    String callNumber = selItem.getString("call_number");
+                                                    // 선택된 콜센터로 전화걸기
+                                                    Intent intent = new Intent(Intent.ACTION_CALL);
+                                                    intent.setData(Uri.parse("tel:" + callNumber));
+                                                    if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                                        return;
+                                                    }
+                                                    startActivity(intent);
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            }
+                                        });
+                                        builder.show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailed(String message) {
+
+                                }
+
+                                @Override
+                                public void onError(String message) {
+
+                                }
+                            });
+                }
             }
         });
 
@@ -148,7 +232,15 @@ public class MainActivity extends GTCallActivity {
         v(R.id.btnMap).click(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(addressObj == null) {
+                    showToast("현재 위치를 알 수 없습니다.");
+                    return;
+                }
+                Intent intent = new Intent(mActivity, MapActivity.class);
+                intent.putExtra("lat", curLat);
+                intent.putExtra("lng", curLng);
+                intent.putExtra("addr", addressObj.getAddr());
+                startActivity(intent);
             }
         });
 
@@ -158,7 +250,8 @@ public class MainActivity extends GTCallActivity {
         v(R.id.btnAddFriend).click(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // 공유하기
+                GTShare.share(mActivity, Pref.getAccount().get(AccountObj.F.share_msg));
             }
         });
 
@@ -173,6 +266,27 @@ public class MainActivity extends GTCallActivity {
             return;
         } else {
 
+        }
+
+
+        // 새로운 공지 확인
+        AccountObj accountObj = Pref.getAccount();
+        String prevLogin = accountObj.get(AccountObj.F.prev_login);
+        String lastNotice = accountObj.get(AccountObj.F.last_notice_time);
+        if(ShDateTime.parseDateTimeString(prevLogin).getTimeInMillis() < ShDateTime.parseDateTimeString(lastNotice).getTimeInMillis()) {
+            // 공지 alert 띄우기
+            SAlertDialog.show(mActivity, "새로운 공지가 있습니다.\n지금 확인하시겠습니까?", "아니요", "예", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 취소
+                }
+            }, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 확인
+                    WebActivity.start(mActivity, Api.PAGE_NOTICE, "공지사항", false);
+                }
+            });
         }
     }
 
@@ -259,6 +373,36 @@ public class MainActivity extends GTCallActivity {
                     curLng = lng;
 
                     // 주소로 변환
+                    SApi.with(mActivity, Api.API_GPS2ADDR)
+                            .param("login_key", Pref.getAccount().get(AccountObj.F.login_key))
+                            .param("lat", curLat)
+                            .param("lng", curLng)
+                            .call(false, new SApiCore.OnRequestComplete() {
+                                @Override
+                                public void onSucceeded(String str, JSONObject obj) throws Exception {
+                                    if(obj.getInt("state") == 0) { // 요청 성공
+                                        JSONObject data = obj.getJSONObject("data");
+                                        if(data == null) {
+                                            return;
+                                        }
+
+                                        addressObj = new AddressObj(data);
+
+                                        // 주소 표시
+                                        v(R.id.txtAddress).setText(addressObj.getAddr());
+                                    }
+                                }
+
+                                @Override
+                                public void onFailed(String message) {
+
+                                }
+
+                                @Override
+                                public void onError(String message) {
+
+                                }
+                            });
                 }
             }
         });
