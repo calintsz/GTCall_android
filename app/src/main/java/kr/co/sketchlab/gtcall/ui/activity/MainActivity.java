@@ -165,14 +165,16 @@ public class MainActivity extends GTCallActivity {
                 if (addressObj != null) {
                     String callNumber = addressObj.getCallNumber();
 
-                    Intent intent = new Intent(Intent.ACTION_CALL);
-                    intent.setData(Uri.parse("tel:" + callNumber));
                     if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse("tel:" + callNumber));
+                        startActivity(intent);
                         return;
                     }
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+                    intent.setData(Uri.parse("tel:" + callNumber));
                     startActivity(intent);
                 } else {
-                    // TODO 지역 선택해서 전화걸게
                     SApi.with(mActivity, Api.API_SERVICE_AREA)
                             .call(true, new SApiCore.OnRequestComplete() {
                                 @Override
@@ -371,6 +373,8 @@ public class MainActivity extends GTCallActivity {
                 } else { // 위치 가져옴
                     curLat = lat;
                     curLng = lng;
+//                    curLat = 35.548088;
+//                    curLng = 129.2810711;
 
                     // 주소로 변환
                     SApi.with(mActivity, Api.API_GPS2ADDR)
