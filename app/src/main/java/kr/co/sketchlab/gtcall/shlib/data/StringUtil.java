@@ -49,6 +49,9 @@ public class StringUtil {
      * @return
      */
     public static String formatPhoneNumber(String phoneNumber) {
+        if(phoneNumber == null) {
+            return "";
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return PhoneNumberUtils.formatNumber(phoneNumber, "KR");
         } else {

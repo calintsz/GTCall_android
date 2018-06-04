@@ -13,6 +13,8 @@ public class AccountObj extends JsonObj {
         bank_code,
         bank_account,
         bank_account_owner,
+        bank_account_check_remain, // 계좌등록 알림팝업 띄울지 여부, 0 보다 크거나 같을때 띄움
+        bank_account_reg_msg, // 계좌등록 안내 멘트
         login_key,
         follower_cnt,
         bottom_notice,
@@ -36,5 +38,7 @@ public class AccountObj extends JsonObj {
         return super.get(name.name());
     }
 
-
+    public int getInt(F name) {
+        return super.getInt(name.name());
+    }
 }

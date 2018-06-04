@@ -275,7 +275,7 @@ public class MainActivity extends GTCallActivity {
         AccountObj accountObj = Pref.getAccount();
         String prevLogin = accountObj.get(AccountObj.F.prev_login);
         String lastNotice = accountObj.get(AccountObj.F.last_notice_time);
-        if(ShDateTime.parseDateTimeString(prevLogin).getTimeInMillis() < ShDateTime.parseDateTimeString(lastNotice).getTimeInMillis()) {
+        if(ShDateTime.parseDateTimeString(prevLogin).getTimeInMillis() < ShDateTime.parseDateTimeString(lastNotice).getTimeInMillis()) { // 공지팝업
             // 공지 alert 띄우기
             SAlertDialog.show(mActivity, "새로운 공지가 있습니다.\n지금 확인하시겠습니까?", "아니요", "예", new View.OnClickListener() {
                 @Override
@@ -289,6 +289,21 @@ public class MainActivity extends GTCallActivity {
                     WebActivity.start(mActivity, Api.PAGE_NOTICE, "공지사항", false);
                 }
             });
+        } else {
+            if(accountObj.getInt(AccountObj.F.bank_account_check_remain) >= 0 && accountObj.get(AccountObj.F.bank_account) == null) {
+                SAlertDialog.show(mActivity, accountObj.get(AccountObj.F.bank_account_reg_msg), "다음에 하기", "계좌 등록", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // 취소
+                    }
+                }, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // 확인
+                        WebActivity.start(mActivity, Api.PAGE_SETTING + Pref.getAccount().get(AccountObj.F.login_key), "내 정보", false);
+                    }
+                });
+            }
         }
     }
 

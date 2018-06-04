@@ -19,11 +19,24 @@ public class JsonObj {
 
     public String get(String name) {
         try {
-            return obj.getString(name);
+            String val = obj.getString(name);
+            if(val.equals("null")) {
+                return null;
+            }
+            return val;
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public int getInt(String name) {
+        try {
+            return obj.getInt(name);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     public JsonObj getObj(String name) {
