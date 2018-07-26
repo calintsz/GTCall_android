@@ -164,6 +164,14 @@ public class MainActivity extends GTCallActivity {
             public void onClick(View v) {
                 if (addressObj != null) {
                     String callNumber = addressObj.getCallNumber();
+                    if(callNumber == null) {
+                        try {
+                            selectAreaAndCall();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        return;
+                    }
 
                     if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                         Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -175,55 +183,11 @@ public class MainActivity extends GTCallActivity {
                     intent.setData(Uri.parse("tel:" + callNumber));
                     startActivity(intent);
                 } else {
-                    SApi.with(mActivity, Api.API_SERVICE_AREA)
-                            .call(true, new SApiCore.OnRequestComplete() {
-                                @Override
-                                public void onSucceeded(String str, JSONObject obj) throws Exception {
-                                    if(obj.getInt("state") == 0) { // 조회 성공
-                                        JSONArray objs = obj.getJSONArray("data");
-                                        final ArrayList<JSONObject> list = JsonUtil.toArrayList(objs);
-                                        // 목록에서 선택하게함
-                                        ArrayList<String> areaNames = new ArrayList<>();
-                                        for(JSONObject item : list) {
-                                            String areaName = item.getString("area_name");
-                                            areaNames.add(areaName);
-                                        }
-
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                                        builder.setTitle("지역을 선택해주세요.");
-                                        builder.setItems(areaNames.toArray(new String[areaNames.size()]), new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                JSONObject selItem = list.get(which);
-                                                try {
-                                                    String callNumber = selItem.getString("call_number");
-                                                    // 선택된 콜센터로 전화걸기
-                                                    Intent intent = new Intent(Intent.ACTION_CALL);
-                                                    intent.setData(Uri.parse("tel:" + callNumber));
-                                                    if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                                                        return;
-                                                    }
-                                                    startActivity(intent);
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
-                                                }
-
-                                            }
-                                        });
-                                        builder.show();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailed(String message) {
-
-                                }
-
-                                @Override
-                                public void onError(String message) {
-
-                                }
-                            });
+                    try {
+                        selectAreaAndCall();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -307,6 +271,58 @@ public class MainActivity extends GTCallActivity {
         }
     }
 
+    private void selectAreaAndCall() throws JSONException {
+        SApi.with(mActivity, Api.API_SERVICE_AREA)
+                .call(true, new SApiCore.OnRequestComplete() {
+                    @Override
+                    public void onSucceeded(String str, JSONObject obj) throws Exception {
+                        if(obj.getInt("state") == 0) { // 조회 성공
+                            JSONArray objs = obj.getJSONArray("data");
+                            final ArrayList<JSONObject> list = JsonUtil.toArrayList(objs);
+                            // 목록에서 선택하게함
+                            ArrayList<String> areaNames = new ArrayList<>();
+                            for(JSONObject item : list) {
+                                String areaName = item.getString("area_name");
+                                areaNames.add(areaName);
+                            }
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                            builder.setTitle("지역을 선택해주세요.");
+                            builder.setItems(areaNames.toArray(new String[areaNames.size()]), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    JSONObject selItem = list.get(which);
+                                    try {
+                                        String callNumber = selItem.getString("call_number");
+                                        // 선택된 콜센터로 전화걸기
+                                        Intent intent = new Intent(Intent.ACTION_CALL);
+                                        intent.setData(Uri.parse("tel:" + callNumber));
+                                        if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                            return;
+                                        }
+                                        startActivity(intent);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            });
+                            builder.show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailed(String message) {
+
+                    }
+
+                    @Override
+                    public void onError(String message) {
+
+                    }
+                });
+    }
+
     /**
      * accountObj 데이터 가져와서 화면 데이터 업데이트
      */
@@ -388,6 +404,10 @@ public class MainActivity extends GTCallActivity {
                 } else { // 위치 가져옴
                     curLat = lat;
                     curLng = lng;
+                    // 37.525879, 128.030375 회성
+//                    curLat = 37.525879;
+//                    curLng = 128.030375;
+
 //                    curLat = 35.548088;
 //                    curLng = 129.2810711;
 
