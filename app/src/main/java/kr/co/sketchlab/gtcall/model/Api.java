@@ -47,6 +47,9 @@ public class Api {
     // gps 좌표를 주소로 변환(login_key, lat, lng)
     public static final String API_GPS2ADDR = "location/gps2addr";
 
+    // 전화걸기 기록 추가
+    public static final String API_ADD_CALL_HISTORY = "location/addCallHistory";
+
     // 서비스 지역 목로 조회
     public static final String API_SERVICE_AREA = "service_area/getList";
 
@@ -121,6 +124,38 @@ public class Api {
                             Toast.makeText(fromActivity, obj.getString("msg"), Toast.LENGTH_LONG).show();
                             WebActivity.start(fromActivity, Api.APP_BASE, "회원가입", true);
                         }
+                    }
+
+                    @Override
+                    public void onFailed(String message) {
+
+                    }
+
+                    @Override
+                    public void onError(String message) {
+
+                    }
+                });
+    }
+
+
+    /**
+     * 전화통화 기록 추가
+     * @param activity
+     * @param addr
+     * @param area
+     * @param callCenterPhone
+     */
+    public static void addCallHistory(S3Activity activity, String addr, String area, String callCenterPhone) {
+        SApi.with(activity, Api.API_ADD_CALL_HISTORY)
+                .param("login_key", Pref.getAccount().get(AccountObj.F.login_key))
+                .param("addr", addr)
+                .param("area", area)
+                .param("call_center_phone", callCenterPhone)
+                .call(false, new SApiCore.OnRequestComplete() {
+                    @Override
+                    public void onSucceeded(String str, JSONObject obj) throws Exception {
+
                     }
 
                     @Override

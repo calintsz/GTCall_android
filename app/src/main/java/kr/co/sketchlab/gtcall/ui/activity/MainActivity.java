@@ -163,6 +163,7 @@ public class MainActivity extends GTCallActivity {
             @Override
             public void onClick(View v) {
                 if (addressObj != null) {
+                    String address = addressObj.getAddr();
                     String callNumber = addressObj.getCallNumber();
                     if(callNumber == null) {
                         try {
@@ -172,6 +173,9 @@ public class MainActivity extends GTCallActivity {
                         }
                         return;
                     }
+
+                    // 전화걸기 기록 추가
+                    Api.addCallHistory(mActivity, address, addressObj.getArea(), callNumber);
 
                     if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                         Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -294,6 +298,12 @@ public class MainActivity extends GTCallActivity {
                                     JSONObject selItem = list.get(which);
                                     try {
                                         String callNumber = selItem.getString("call_number");
+                                        String areaName = selItem.getString("area_name");
+
+                                        // 전화걸기 기록 추가
+                                        Api.addCallHistory(mActivity, "", areaName, callNumber);
+
+
                                         // 선택된 콜센터로 전화걸기
                                         Intent intent = new Intent(Intent.ACTION_CALL);
                                         intent.setData(Uri.parse("tel:" + callNumber));
@@ -389,6 +399,8 @@ public class MainActivity extends GTCallActivity {
             requestLocation();
         }
     }
+
+
 
     /**
      * 현재위치 조회

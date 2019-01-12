@@ -107,4 +107,18 @@ public class AddressObj extends JsonObj {
 
         return serviceArea.get("call_number");
     }
+
+    /**
+     * 지역 명
+     * @return
+     */
+    public String getArea() {
+//        "service_area" -> "{"idx":"1","area_name":"수도권","call_number":"1600-1737","area_code":"032","sido_match":"\/^(서울특별시|경기도|인천광역시)$\/","reward_percent":"10","reward_amount":null,"use_yn":"Y","reg_date":"2018-05-21 23:29:15"}"
+        JsonObj serviceArea = getObj("service_area");
+        if(serviceArea == null) {
+            return "";
+        }
+
+        return serviceArea.get("area_name");
+    }
 }
