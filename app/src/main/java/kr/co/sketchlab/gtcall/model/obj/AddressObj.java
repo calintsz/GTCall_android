@@ -71,6 +71,10 @@ public class AddressObj extends JsonObj {
         return addr.trim();
     }
 
+    public String getOldAddr() {
+        return get("old_address");
+    }
+
     /**
      * 국가
      * @return

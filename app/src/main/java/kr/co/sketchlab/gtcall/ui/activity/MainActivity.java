@@ -175,7 +175,7 @@ public class MainActivity extends GTCallActivity {
                     }
 
                     // 전화걸기 기록 추가
-                    Api.addCallHistory(mActivity, address, addressObj.getArea(), callNumber);
+                    Api.addCallHistory(mActivity, address, addressObj.getOldAddr(), addressObj.getArea(), callNumber);
 
                     if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                         Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -301,7 +301,13 @@ public class MainActivity extends GTCallActivity {
                                         String areaName = selItem.getString("area_name");
 
                                         // 전화걸기 기록 추가
-                                        Api.addCallHistory(mActivity, "", areaName, callNumber);
+                                        String addr = "";
+                                        String oldAddr = "";
+                                        if(addressObj != null) {
+                                            addr = addressObj.getAddr();
+                                            oldAddr = addressObj.getOldAddr();
+                                        }
+                                        Api.addCallHistory(mActivity, addr, oldAddr, areaName, callNumber);
 
 
                                         // 선택된 콜센터로 전화걸기

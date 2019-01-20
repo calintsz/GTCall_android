@@ -146,10 +146,11 @@ public class Api {
      * @param area
      * @param callCenterPhone
      */
-    public static void addCallHistory(S3Activity activity, String addr, String area, String callCenterPhone) {
+    public static void addCallHistory(S3Activity activity, String addr, String oldAddr, String area, String callCenterPhone) {
         SApi.with(activity, Api.API_ADD_CALL_HISTORY)
                 .param("login_key", Pref.getAccount().get(AccountObj.F.login_key))
                 .param("addr", addr)
+                .param("old_addr", oldAddr)
                 .param("area", area)
                 .param("call_center_phone", callCenterPhone)
                 .call(false, new SApiCore.OnRequestComplete() {
