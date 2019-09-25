@@ -97,6 +97,13 @@ public class MainActivity extends GTCallActivity {
                 WebActivity.start(mActivity, Api.PAGE_CASHBACK + Pref.getAccount().get(AccountObj.F.login_key), "나의 캐시백", false);
             }
         });
+        // 단체 리스트
+        v(R.id.btnDrawerOrganizationList).click(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WebActivity.start(mActivity, Api.PAGE_ORGANIZATION_LIST + Pref.getAccount().get(AccountObj.F.login_key), "단체 리스트", false);
+            }
+        });
         // 친구초청
         v(R.id.btnDrawerInviteFriend).click(new View.OnClickListener() {
             @Override
@@ -167,7 +174,7 @@ public class MainActivity extends GTCallActivity {
                     String callNumber = addressObj.getCallNumber();
                     if(callNumber == null) {
                         try {
-                            selectAreaAndCall();
+                            selectAreaAndCall(false);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -188,7 +195,47 @@ public class MainActivity extends GTCallActivity {
                     startActivity(intent);
                 } else {
                     try {
-                        selectAreaAndCall();
+                        selectAreaAndCall(false);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        /**
+         * 탁송 전화걸기
+         */
+        v(R.id.btnCallConsign).click(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (addressObj != null) {
+                    String address = addressObj.getAddr();
+                    String callNumber = addressObj.getConsignCallNumber();
+                    if(callNumber == null) {
+                        try {
+                            selectAreaAndCall(true);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        return;
+                    }
+
+                    // 전화걸기 기록 추가
+                    Api.addCallHistory(mActivity, address, addressObj.getOldAddr(), addressObj.getArea(), callNumber);
+
+                    if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse("tel:" + callNumber));
+                        startActivity(intent);
+                        return;
+                    }
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+                    intent.setData(Uri.parse("tel:" + callNumber));
+                    startActivity(intent);
+                } else {
+                    try {
+                        selectAreaAndCall(true);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -275,7 +322,12 @@ public class MainActivity extends GTCallActivity {
         }
     }
 
-    private void selectAreaAndCall() throws JSONException {
+    /**
+     *
+     * @param isConsign 탁송인지 여부
+     * @throws JSONException
+     */
+    private void selectAreaAndCall(final boolean isConsign) throws JSONException {
         SApi.with(mActivity, Api.API_SERVICE_AREA)
                 .call(true, new SApiCore.OnRequestComplete() {
                     @Override
@@ -298,6 +350,8 @@ public class MainActivity extends GTCallActivity {
                                     JSONObject selItem = list.get(which);
                                     try {
                                         String callNumber = selItem.getString("call_number");
+                                        if(isConsign)
+                                            callNumber = selItem.getString("consign_call_number");
                                         String areaName = selItem.getString("area_name");
 
                                         // 전화걸기 기록 추가
@@ -307,16 +361,20 @@ public class MainActivity extends GTCallActivity {
                                             addr = addressObj.getAddr();
                                             oldAddr = addressObj.getOldAddr();
                                         }
+                                        // 통화기록 추가
                                         Api.addCallHistory(mActivity, addr, oldAddr, areaName, callNumber);
 
 
                                         // 선택된 콜센터로 전화걸기
-                                        Intent intent = new Intent(Intent.ACTION_CALL);
-                                        intent.setData(Uri.parse("tel:" + callNumber));
                                         if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                                            return;
+                                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                                            intent.setData(Uri.parse("tel:" + callNumber));
+                                            startActivity(intent);
+                                        } else {
+                                            Intent intent = new Intent(Intent.ACTION_CALL);
+                                            intent.setData(Uri.parse("tel:" + callNumber));
+                                            startActivity(intent);
                                         }
-                                        startActivity(intent);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }

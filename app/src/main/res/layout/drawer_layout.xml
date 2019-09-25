@@ -157,6 +157,37 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#dddddd" />
+                <!-- 단체리스트 -->
+                <FrameLayout
+                    android:id="@+id/btnDrawerOrganizationList"
+                    android:layout_width="match_parent"
+                    android:layout_height="41dp"
+                    android:background="@drawable/ripple_black">
+                    <ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_friends"
+                        android:layout_gravity="center_vertical"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:textSize="14sp"
+                        android:textColor="#222222"
+                        android:layout_gravity="center_vertical"
+                        android:text="단체 리스트"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_drawer_next"
+                        android:layout_marginRight="16dp"
+                        android:layout_gravity="center_vertical|right" />
+                </FrameLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd" />
                 <!--친구 초청-->
                 <FrameLayout
                     android:id="@+id/btnDrawerInviteFriend"

@@ -113,6 +113,19 @@ public class AddressObj extends JsonObj {
     }
 
     /**
+     * 탁송 콜 전화번호
+     * @return
+     */
+    public String getConsignCallNumber() {
+        JsonObj serviceArea = getObj("service_area");
+        if(serviceArea == null) {
+            return null;
+        }
+
+        return serviceArea.get("consign_call_number");
+    }
+
+    /**
      * 지역 명
      * @return
      */

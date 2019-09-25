@@ -25,6 +25,8 @@ public class Api {
     public static final String PAGE_SETTING = APP_BASE + "/profile/edit?login_key=";
     // 나의 캐시백
     public static final String PAGE_CASHBACK = APP_BASE + "/cashback/manage?login_key=";
+    // 단체 리스트
+    public static final String PAGE_ORGANIZATION_LIST = APP_BASE + "/organization/manage?login_key=";
     // 일반전화번호 등록
     public static final String PAGE_SUBPHONE = APP_BASE + "/profile/subphone?login_key=";
 
