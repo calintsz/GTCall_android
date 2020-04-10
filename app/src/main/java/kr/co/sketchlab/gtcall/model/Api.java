@@ -14,7 +14,7 @@ import kr.co.sketchlab.gtcall.ui.activity.MainActivity;
 import kr.co.sketchlab.gtcall.ui.activity.WebActivity;
 
 public class Api {
-    public static final String WEB_BASE = "http://gtcall.sketchlab.co.kr";
+    public static final String WEB_BASE = "https://gtcall.sketchlab.co.kr";
     public static final String API_BASE = WEB_BASE + "/api/";
 
     public static final String APP_BASE = WEB_BASE + "/app";
