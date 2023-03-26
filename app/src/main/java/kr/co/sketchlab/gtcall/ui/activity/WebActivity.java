@@ -74,7 +74,7 @@ public class WebActivity extends GTCallActivity {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT); // 250811
         webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setAppCacheEnabled(true);
+//        webView.getSettings().setAppCacheEnabled(true);
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         webView.getSettings().setDatabaseEnabled(true);
         webView.getSettings().setAllowUniversalAccessFromFileURLs(true);

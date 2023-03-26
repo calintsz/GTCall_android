@@ -72,7 +72,8 @@ public class MapActivity extends GTCallActivity {
         webView.getSettings().setGeolocationEnabled(true);
         webView.getSettings().setGeolocationDatabasePath( getFilesDir().getPath() );
 
-        webView.getSettings().setAppCacheEnabled(true);
+//        webView.getSettings().setAppCacheEnabled(true);
+
         webView.getSettings().setDatabaseEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
 
