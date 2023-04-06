@@ -9,7 +9,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.fragment.app.FragmentActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.lifecycle.LiveData;
 import android.text.Spannable;
 import android.util.Log;
 import android.view.View;
@@ -73,66 +73,6 @@ public class S3Activity extends FragmentActivity {
         resumed = true;
         Log.d(TAG, "Activity Resumed");
     }
-    public void addLocalBroadcastReceiver(String[] actions, BroadcastReceiver receiver) {
-
-        if (actions == null || actions.length == 0) return;
-
-        IntentFilter intentFilter = new IntentFilter();
-
-        for (String action : actions) {
-            intentFilter.addAction(action);
-        }
-
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, intentFilter);
-        broadcastReceivers.add(receiver);
-
-    }
-
-    public void addLocalBroadcastReceiver(List<String> actions, BroadcastReceiver receiver) {
-
-        if (actions == null || actions.size() == 0) return;
-
-        IntentFilter intentFilter = new IntentFilter();
-
-        for (String action : actions) {
-            intentFilter.addAction(action);
-        }
-
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, intentFilter);
-        broadcastReceivers.add(receiver);
-
-    }
-
-    public void addLocalBroadcastReceiver(String action, BroadcastReceiver receiver) {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(action);
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, intentFilter);
-        broadcastReceivers.add(receiver);
-    }
-
-    public void removeLocalBroadcastReceiver(BroadcastReceiver receiver) {
-        Log.d(TAG, "removeLocalBroadcastReceiver");
-
-        broadcastReceivers.remove(receiver);
-        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(receiver);
-    }
-
-    public void sendLocalBroadcast(String action) {
-        sendLocalBroadcast(getApplicationContext(), action);
-    }
-    public static void sendLocalBroadcast(Context applicationContext, String action) {
-        sendLocalBroadcast(applicationContext, action, null);
-    }
-    public void sendLocalBroadcast(String action, Bundle data) {
-        sendLocalBroadcast(getApplicationContext(), action, data);
-    }
-    public static void sendLocalBroadcast(Context applicationContext, String action, Bundle data) {
-        Intent intent = new Intent();
-        intent.setAction(action);
-        if(data != null)
-            intent.putExtra("data", data);
-        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent);
-    }
 
     public void startActivityWithClear(Class<?> cls) {
         Intent intent = new Intent(this, cls);
@@ -161,10 +101,10 @@ public class S3Activity extends FragmentActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
-        for(BroadcastReceiver receiver : broadcastReceivers) {
-            localBroadcastManager.unregisterReceiver(receiver);
-        }
+//        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+//        for(BroadcastReceiver receiver : broadcastReceivers) {
+//            localBroadcastManager.unregisterReceiver(receiver);
+//        }
         broadcastReceivers.clear();
     }
 

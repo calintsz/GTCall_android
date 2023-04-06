@@ -4,8 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import androidx.annotation.NonNull;
+import 	androidx.core.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 
 import kr.co.sketchlab.gtcall.GTCallActivity;
@@ -32,6 +32,7 @@ public class SplashActivity extends GTCallActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grandResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grandResults);
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) { // 권한 없음
                 Api.tryLogin(mActivity);
